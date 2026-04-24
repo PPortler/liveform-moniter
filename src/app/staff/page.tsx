@@ -6,8 +6,57 @@ import { FormField } from "@/components/UI/FormField";
 import SubmittedList from "./components/SubmittedList/SubmittedList";
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge";
 import { Status } from "@/consts/enum";
+import { socket } from "@/lib/socket/socket";
+import { useEffect, useState } from "react";
+import { usePatientStore } from "@/stores/patient.store";
+import { formatTimeAgo } from "@/utils/time";
 
 function StaffPage() {
+  const {
+    setCurrentPatient,
+    addSubmittedPatient,
+    clearCurrentPatient,
+    setStatus,
+    lastUpdatedAt,
+    currentPatient,
+    status,
+  } = usePatientStore();
+
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((t) => t + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    socket.on("form:update", (data) => {
+      setCurrentPatient(data);
+      setStatus(Status.ACTIVE);
+
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setStatus(Status.INACTIVE);
+      }, 3000);
+    });
+
+    socket.on("form:submit", (data) => {
+      addSubmittedPatient(data);
+      setStatus(Status.SUBMITTED);
+      clearCurrentPatient();
+    });
+
+    return () => {
+      socket.off("form:update");
+      socket.off("form:submit");
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <section className="card-container">
       {/* Back Button */}
@@ -30,7 +79,7 @@ function StaffPage() {
           </p>
 
           {/* Status Badge */}
-          <StatusBadge status={Status.ACTIVE} />
+          <StatusBadge status={status} />
         </div>
 
         {/* form read-only */}
@@ -38,7 +87,7 @@ function StaffPage() {
           <FormField
             label="First Name"
             name="firstName"
-            value="John"
+            value={currentPatient.firstName}
             onChange={() => { }}
             readOnly
           />
@@ -46,7 +95,7 @@ function StaffPage() {
           <FormField
             label="Last Name"
             name="lastName"
-            value="Doe"
+            value={currentPatient.lastName}
             onChange={() => { }}
             readOnly
           />
@@ -54,7 +103,7 @@ function StaffPage() {
           <FormField
             label="Email"
             name="email"
-            value="john@email.com"
+            value={currentPatient.email}
             onChange={() => { }}
             readOnly
           />
@@ -62,7 +111,7 @@ function StaffPage() {
           <FormField
             label="Phone"
             name="phone"
-            value="099xxxxxxx"
+            value={currentPatient.phone}
             onChange={() => { }}
             readOnly
           />
@@ -70,7 +119,7 @@ function StaffPage() {
           <FormField
             label="Gender"
             name="gender"
-            value="male"
+            value={currentPatient.gender}
             onChange={() => { }}
             as="select"
             readOnly
@@ -83,7 +132,7 @@ function StaffPage() {
           <FormField
             label="Nationality"
             name="nationality"
-            value="Test"
+            value={currentPatient.nationality}
             onChange={() => { }}
             readOnly
           />
@@ -92,7 +141,7 @@ function StaffPage() {
             <FormField
               label="Address"
               name="address"
-              value="Bangkok, Thailand"
+              value={currentPatient.address}
               onChange={() => { }}
               as="textarea"
               readOnly
@@ -102,7 +151,8 @@ function StaffPage() {
 
         {/* Last Updated */}
         <p className="mt-4 text-xs text-slate-500">
-          Last updated: just now
+          Last updated:{" "}
+          {lastUpdatedAt ? formatTimeAgo(lastUpdatedAt) : "-"}
         </p>
       </div>
 

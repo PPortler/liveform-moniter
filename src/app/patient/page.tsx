@@ -8,6 +8,9 @@ import { useState } from "react";
 import { Patients } from "@/types/Patient/Patient";
 import { validatePatient } from "@/lib/validation/patient.validation";
 import SummaryForm from "./components/SummaryForm/SummaryForm";
+import { usePatientStore } from "@/stores/patient.store";
+import { emitUpdate, emitSubmit, emitStatus } from "@/services/patient.socket";
+import { Status } from "@/consts/enum";
 
 function PatientPage() {
 
@@ -27,6 +30,7 @@ function PatientPage() {
     Partial<Record<keyof Patients, string>>
   >({});
 
+  const { addSubmittedPatient, clearCurrentPatient } = usePatientStore();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -35,10 +39,15 @@ function PatientPage() {
   ) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    const updated = {
+      ...formData,
       [name]: value,
-    }));
+    };
+
+    setFormData(updated);
+    // Emit update to socket
+    emitUpdate(updated);
+    emitStatus(Status.ACTIVE);
 
     // Clear error for the field on change
     setErrors((prev) => ({
@@ -54,6 +63,12 @@ function PatientPage() {
       setErrors(validationErrors);
       return;
     }
+
+    // Add to global store
+    addSubmittedPatient(formData);
+    // Emit submit to socket
+    emitSubmit(formData);
+    emitStatus(Status.SUBMITTED);
 
     setErrors({});
     setSubmitted(true);
@@ -72,6 +87,7 @@ function PatientPage() {
     });
 
     setSubmitted(false);
+    clearCurrentPatient();
   };
 
   return (
@@ -144,7 +160,6 @@ function PatientPage() {
             onChange={handleChange}
             as="select"
             options={[
-              { label: "Select gender", value: "" },
               { label: "Male", value: "male" },
               { label: "Female", value: "female" },
             ]}
