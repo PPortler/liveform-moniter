@@ -71,8 +71,8 @@ function SummaryForm({ formData, handleReset }: SummaryFormProps) {
 
         <p className="sm:col-span-2">
           <span className="font-semibold">Emergency Contact:</span>{" "}
-          {formData.emergencyContact?.name
-            ? `${formData.emergencyContact.name} (${formData.emergencyContact.relationship || "-"})`
+          {formData.emergencyContact_name
+            ? `${formData.emergencyContact_name} (${formData.emergencyContact_relationship || "-"})`
             : "-"}
         </p>
       </div>
