@@ -2,14 +2,14 @@
 
 import { BackButton } from "@/components/BackButton/BackButton";
 import HeaderTitle from "@/components/HeaderTitle/HeaderTitle";
-import { FormField } from "@/components/UI/FormField";
 import SubmittedList from "./components/SubmittedList/SubmittedList";
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge";
 import { Status } from "@/consts/enum";
 import { socket } from "@/lib/socket/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePatientStore } from "@/stores/patient.store";
 import { formatTimeAgo } from "@/utils/time";
+import PatientForm from "@/components/PatientForm/PatientForm";
 
 function StaffPage() {
   const {
@@ -23,6 +23,7 @@ function StaffPage() {
   } = usePatientStore();
 
   const [, setTick] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,14 +33,17 @@ function StaffPage() {
   }, []);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
 
     socket.on("form:update", (data) => {
       setCurrentPatient(data);
       setStatus(Status.ACTIVE);
 
-      clearTimeout(timer);
-      timer = setTimeout(() => {
+      // Reset inactivity timer
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      // Set new inactivity timer
+      timerRef.current = setTimeout(() => {
         setStatus(Status.INACTIVE);
       }, 3000);
     });
@@ -48,12 +52,21 @@ function StaffPage() {
       addSubmittedPatient(data);
       setStatus(Status.SUBMITTED);
       clearCurrentPatient();
+
+      // Reset inactivity timer
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     });
 
     return () => {
       socket.off("form:update");
       socket.off("form:submit");
-      clearTimeout(timer);
+
+      // Reset inactivity timer
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
@@ -83,70 +96,11 @@ function StaffPage() {
         </div>
 
         {/* form read-only */}
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <FormField
-            label="First Name"
-            name="firstName"
-            value={currentPatient.firstName}
-            onChange={() => { }}
+        <div>
+          <PatientForm
+            formData={currentPatient}
             readOnly
           />
-
-          <FormField
-            label="Last Name"
-            name="lastName"
-            value={currentPatient.lastName}
-            onChange={() => { }}
-            readOnly
-          />
-
-          <FormField
-            label="Email"
-            name="email"
-            value={currentPatient.email}
-            onChange={() => { }}
-            readOnly
-          />
-
-          <FormField
-            label="Phone"
-            name="phone"
-            value={currentPatient.phone}
-            onChange={() => { }}
-            readOnly
-          />
-
-          <FormField
-            label="Gender"
-            name="gender"
-            value={currentPatient.gender}
-            onChange={() => { }}
-            as="select"
-            readOnly
-            options={[
-              { label: "Male", value: "male" },
-              { label: "Female", value: "female" },
-            ]}
-          />
-
-          <FormField
-            label="Nationality"
-            name="nationality"
-            value={currentPatient.nationality}
-            onChange={() => { }}
-            readOnly
-          />
-
-          <div className="sm:col-span-2">
-            <FormField
-              label="Address"
-              name="address"
-              value={currentPatient.address}
-              onChange={() => { }}
-              as="textarea"
-              readOnly
-            />
-          </div>
         </div>
 
         {/* Last Updated */}

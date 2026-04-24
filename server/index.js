@@ -21,7 +21,4 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("form:status", status);
   });
 
-  socket.on("disconnect", () => {
-    console.log("disconnected");
-  });
 });

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Patients } from "@/types/Patient/Patient";
 import { Status } from "@/consts/enum";
+import { INITIAL_PATIENT } from "@/consts/patient/patient.initial";
 
 type SubmittedPatient = Patients & {
   submittedAt: string;
@@ -17,19 +18,8 @@ type Store = {
   addSubmittedPatient: (data: Patients) => void;
 };
 
-const initial: Patients = {
-  firstName: "",
-  middleName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  address: "",
-  gender: "",
-  nationality: "",
-};
-
 export const usePatientStore = create<Store>((set) => ({
-  currentPatient: initial,
+  currentPatient: INITIAL_PATIENT,
   submittedPatients: [],
   status: Status.INACTIVE,
   lastUpdatedAt: 0,
@@ -56,7 +46,7 @@ export const usePatientStore = create<Store>((set) => ({
 
   clearCurrentPatient: () =>
     set({
-      currentPatient: initial,
+      currentPatient: INITIAL_PATIENT,
       lastUpdatedAt: 0,
     }),
 }));

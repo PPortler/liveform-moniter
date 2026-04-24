@@ -3,24 +3,26 @@ import { Patients } from "@/types/Patient/Patient";
 export function validatePatient(data: Patients) {
   const errors: Partial<Record<keyof Patients, string>> = {};
 
-  if (!data.firstName.trim()) {
-    errors.firstName = "First name is required";
-  }
+  // required fields
+  if (!data.firstName) errors.firstName = "First name is required";
+  if (!data.lastName) errors.lastName = "Last name is required";
+  if (!data.dateOfBirth) errors.dateOfBirth = "Date of birth is required";
+  if (!data.gender) errors.gender = "Gender is required";
+  if (!data.phone) errors.phone = "Phone is required";
+  if (!data.email) errors.email = "Email is required";
+  if (!data.address) errors.address = "Address is required";
+  if (!data.preferredLanguage)
+    errors.preferredLanguage = "Preferred language is required";
+  if (!data.nationality) errors.nationality = "Nationality is required";
 
-  if (!data.lastName.trim()) {
-    errors.lastName = "Last name is required";
-  }
-
-  if (!data.email.trim()) {
-    errors.email = "Email is required";
-  } else if (!/^\S+@\S+\.\S+$/.test(data.email)) {
+  // email validate
+  if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.email = "Invalid email format";
   }
 
-  if (!data.phone.trim()) {
-    errors.phone = "Phone is required";
-  } else if (!/^[0-9]{9,10}$/.test(data.phone)) {
-    errors.phone = "Phone must be 9-10 digits";
+  // phone validate (ง่าย + ใช้จริง)
+  if (data.phone && !/^[0-9]{8,15}$/.test(data.phone)) {
+    errors.phone = "Invalid phone number";
   }
 
   return errors;
