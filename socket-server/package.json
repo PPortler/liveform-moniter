@@ -1,0 +1,11 @@
+{
+  "name": "socket-server",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
+}
