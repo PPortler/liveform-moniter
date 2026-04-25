@@ -5,6 +5,17 @@ import { usePatientStore } from "@/stores/patient.store";
 function SubmittedList() {
   const { submittedPatients } = usePatientStore();
 
+  const BASIC_FIELDS = [
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Gender", key: "gender" },
+    { label: "DOB", key: "dateOfBirth" },
+    { label: "Nationality", key: "nationality" },
+    { label: "Language", key: "preferredLanguage" },
+    { label: "Religion", key: "religion" },
+    { label: "Address", key: "address" },
+  ];
+
   return (
     <div>
       {/* HEADER */}
@@ -31,7 +42,7 @@ function SubmittedList() {
       <div className="mt-4 space-y-3">
         {submittedPatients.map((patient, index) => (
           <div
-            key={index}
+            key={`${patient.firstName}-${index}`}
             className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
           >
             {/* HEADER */}
@@ -48,15 +59,14 @@ function SubmittedList() {
 
             {/* BASIC INFO */}
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs text-slate-600 border-t pt-3">
-              <p><span className="font-medium">Email:</span> {patient.email || "-"}</p>
-              <p><span className="font-medium">Phone:</span> {patient.phone || "-"}</p>
-              <p><span className="font-medium">Gender:</span> {patient.gender || "-"}</p>
-              <p><span className="font-medium">DOB:</span> {patient.dateOfBirth || "-"}</p>
-              <p><span className="font-medium">Nationality:</span> {patient.nationality || "-"}</p>
-              <p><span className="font-medium">Language:</span> {patient.preferredLanguage || "-"}</p>
-              <p><span className="font-medium">Religion:</span> {patient.religion || "-"}</p>
-              <p><span className="font-medium">Address:</span> {patient.address || "-"}</p>
+              {BASIC_FIELDS.map((field) => (
+                <p key={field.key}>
+                  <span className="font-medium">{field.label}:</span>{" "}
+                  {patient[field.key as keyof typeof patient] || "-"}
+                </p>
+              ))}
             </div>
+
             {/* EMERGENCY CONTACT */}
             <div className="mt-3 text-xs text-slate-600 border-t pt-3">
               <p className="font-medium text-slate-700 mb-1">

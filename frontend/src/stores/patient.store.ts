@@ -12,10 +12,10 @@ type Store = {
   submittedPatients: SubmittedPatient[];
   status: Status;
   lastUpdatedAt: number;
-  clearCurrentPatient: () => void;
   setCurrentPatient: (data: Patients) => void;
   setStatus: (status: Status) => void;
   addSubmittedPatient: (data: Patients) => void;
+  clearCurrentPatient: () => void;
 };
 
 export const usePatientStore = create<Store>((set) => ({

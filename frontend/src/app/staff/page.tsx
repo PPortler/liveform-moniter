@@ -1,15 +1,15 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { BackButton } from "@/components/BackButton/BackButton";
 import HeaderTitle from "@/components/HeaderTitle/HeaderTitle";
-import SubmittedList from "./components/SubmittedList/SubmittedList";
-import { StatusBadge } from "@/components/StatusBadge/StatusBadge";
-import { Status } from "@/consts/enum";
-import { socket } from "@/lib/socket/socket";
-import { useEffect, useRef, useState } from "react";
-import { usePatientStore } from "@/stores/patient.store";
-import { formatTimeAgo } from "@/utils/time";
 import PatientForm from "@/components/PatientForm/PatientForm";
+import { StatusBadge } from "@/components/StatusBadge/StatusBadge";
+import SubmittedList from "./components/SubmittedList/SubmittedList";
+import { usePatientStore } from "@/stores/patient.store";
+import { socket } from "@/lib/socket/socket";
+import { formatTimeAgo } from "@/utils/time";
+import { Status } from "@/consts/enum";
 
 function StaffPage() {
   const {
@@ -25,6 +25,7 @@ function StaffPage() {
   const [, setTick] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // For updating "Last updated" time every second
   useEffect(() => {
     const interval = setInterval(() => {
       setTick((t) => t + 1);
@@ -33,7 +34,6 @@ function StaffPage() {
   }, []);
 
   useEffect(() => {
-
     socket.on("form:update", (data) => {
       setCurrentPatient(data);
       setStatus(Status.ACTIVE);

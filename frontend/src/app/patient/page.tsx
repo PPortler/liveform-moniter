@@ -1,18 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { AppButton } from "@/components/UI/AppButton";
 import { BackButton } from "@/components/BackButton/BackButton";
 import HeaderTitle from "@/components/HeaderTitle/HeaderTitle";
-import { useState } from "react";
-import { Patients } from "@/types/Patient/Patient";
-import { validatePatient } from "@/lib/validation/patient.validation";
-import SummaryForm from "./components/SummaryForm/SummaryForm";
-import { usePatientStore } from "@/stores/patient.store";
-import { emitUpdate, emitSubmit, emitStatus } from "@/services/patient.socket";
-import { Status } from "@/consts/enum";
-import { INITIAL_PATIENT } from "@/consts/patient/patient.initial";
 import PatientForm from "@/components/PatientForm/PatientForm";
+import { usePatientStore } from "@/stores/patient.store";
+import { emitUpdate, emitSubmit } from "@/services/patient.socket";
+import { validatePatient } from "@/lib/validation/patient.validation";
 import { debounce } from "@/utils/debounce";
+import { INITIAL_PATIENT } from "@/consts/patient/patient.initial";
+import { Patients } from "@/types/Patient/Patient";
+import SummaryForm from "./components/SummaryForm/SummaryForm";
 
 function PatientPage() {
 
@@ -31,17 +30,16 @@ function PatientPage() {
   ) => {
     const { name, value } = e.target;
 
-    const updated = {
+    const updatedForm = {
       ...formData,
       [name]: value,
     };
 
-    setFormData(updated);
+    setFormData(updatedForm);
     // Emit update to socket
     debounce("patient-update", (data: Patients) => {
       emitUpdate(data);
-      emitStatus(Status.ACTIVE);
-    })(updated);
+    })(updatedForm);
 
     // Clear error for the field on change
     setErrors((prev) => ({
@@ -62,7 +60,6 @@ function PatientPage() {
     addSubmittedPatient(formData);
     // Emit submit to socket
     emitSubmit(formData);
-    emitStatus(Status.SUBMITTED);
 
     setErrors({});
     setSubmitted(true);

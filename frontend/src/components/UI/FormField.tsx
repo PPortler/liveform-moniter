@@ -27,7 +27,7 @@ type FormFieldProps = {
 };
 
 const CONTROL_CLASSNAME =
-  "w-full h-[42px] rounded-xl border bg-white px-3 py-2.5 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 appearance-none";
+  "w-full h-[42px] rounded-xl border px-3 py-2.5 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 appearance-none";
 
 export function FormField({
   label,
@@ -51,6 +51,7 @@ export function FormField({
     ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100"
     : "border-slate-300 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
+  const readOnlyClassName = readOnly ? "cursor-not-allowed bg-gray-100" : "bg-white";
   return (
     <label htmlFor={fieldId} className={`block ${className ?? ""}`}>
       <span className="mb-1.5 block text-sm font-semibold text-slate-700">
@@ -68,7 +69,7 @@ export function FormField({
           required={required}
           aria-invalid={hasError}
           autoComplete={autoComplete}
-          className={`${CONTROL_CLASSNAME} ${stateClassName}`}
+          className={`${CONTROL_CLASSNAME} ${stateClassName} ${readOnlyClassName}`}
           placeholder={placeholder || label}
           readOnly={readOnly}
         />
@@ -83,7 +84,7 @@ export function FormField({
           required={required}
           aria-invalid={hasError}
           autoComplete={autoComplete}
-          className={`${CONTROL_CLASSNAME} ${stateClassName}`}
+          className={`${CONTROL_CLASSNAME} ${stateClassName} ${readOnlyClassName}`}
           disabled={readOnly}
         >
           {options.map((option) => (
@@ -104,7 +105,7 @@ export function FormField({
           required={required}
           aria-invalid={hasError}
           autoComplete={autoComplete}
-          className={`${CONTROL_CLASSNAME} ${stateClassName}`}
+          className={`${CONTROL_CLASSNAME} ${stateClassName} ${readOnlyClassName}`}
           placeholder={placeholder || label}
           readOnly={readOnly}
         />

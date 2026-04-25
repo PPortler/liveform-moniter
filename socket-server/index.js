@@ -1,5 +1,6 @@
 import http from "http";
 import { Server } from "socket.io";
+import "dotenv/config";
 
 const server = http.createServer();
 
@@ -18,10 +19,6 @@ io.on("connection", (socket) => {
 
   socket.on("form:submit", (data) => {
     socket.broadcast.emit("form:submit", data);
-  });
-
-  socket.on("form:status", (status) => {
-    socket.broadcast.emit("form:status", status);
   });
 
   socket.on("disconnect", () => {

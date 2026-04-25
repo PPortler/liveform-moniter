@@ -7,6 +7,24 @@ type SummaryFormProps = {
 };
 
 function SummaryForm({ formData, handleReset }: SummaryFormProps) {
+  const SUMMARY_FIELDS = [
+    { label: "First Name", value: (d: Patients) => d.firstName },
+    { label: "Middle Name", value: (d: Patients) => d.middleName },
+    { label: "Last Name", value: (d: Patients) => d.lastName },
+    { label: "Date of Birth", value: (d: Patients) => d.dateOfBirth },
+    { label: "Gender", value: (d: Patients) => d.gender },
+    { label: "Phone", value: (d: Patients) => d.phone },
+    { label: "Email", value: (d: Patients) => d.email },
+    { label: "Address", value: (d: Patients) => d.address },
+    { label: "Preferred Language", value: (d: Patients) => d.preferredLanguage },
+    { label: "Nationality", value: (d: Patients) => d.nationality },
+    { label: "Religion", value: (d: Patients) => d.religion, },
+    {
+      label: "Emergency Contact",
+      value: (d: Patients) => `${d.emergencyContact_name} (${d.emergencyContact_relationship})`,
+    },
+  ];
+
   return (
     <div className="rounded-2xl border border-green-200 bg-green-50/70 p-5">
       <p className="text-sm font-semibold text-green-700">
@@ -14,67 +32,14 @@ function SummaryForm({ formData, handleReset }: SummaryFormProps) {
       </p>
 
       <div className="mt-4 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
-        <p>
-          <span className="font-semibold">First Name:</span>{" "}
-          {formData.firstName}
-        </p>
-
-        <p>
-          <span className="font-semibold">Middle Name:</span>{" "}
-          {formData.middleName || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Last Name:</span>{" "}
-          {formData.lastName}
-        </p>
-
-        <p>
-          <span className="font-semibold">Date of Birth:</span>{" "}
-          {formData.dateOfBirth || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Gender:</span>{" "}
-          {formData.gender || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Phone:</span>{" "}
-          {formData.phone}
-        </p>
-
-        <p>
-          <span className="font-semibold">Email:</span>{" "}
-          {formData.email}
-        </p>
-
-        <p className="sm:col-span-2">
-          <span className="font-semibold">Address:</span>{" "}
-          {formData.address || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Preferred Language:</span>{" "}
-          {formData.preferredLanguage || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Nationality:</span>{" "}
-          {formData.nationality || "-"}
-        </p>
-
-        <p>
-          <span className="font-semibold">Religion:</span>{" "}
-          {formData.religion || "-"}
-        </p>
-
-        <p className="sm:col-span-2">
-          <span className="font-semibold">Emergency Contact:</span>{" "}
-          {formData.emergencyContact_name
-            ? `${formData.emergencyContact_name} (${formData.emergencyContact_relationship || "-"})`
-            : "-"}
-        </p>
+        {SUMMARY_FIELDS.map((field) => (
+          <p
+            key={field.label}
+          >
+            <span className="font-semibold">{field.label}:</span>{" "}
+            {field.value(formData) || "-"}
+          </p>
+        ))}
       </div>
 
       <div className="mt-5">
