@@ -81,18 +81,19 @@ Responsive
 ```text
 liveform-monitor/
 	frontend/
-		src/
-			app/
-				page.tsx                  # Home (เลือกโหมด)
-				patient/page.tsx          # Patient View
-				staff/page.tsx            # Staff View
-			components/                 # Reusable UI components
-			services/patient.socket.ts  # Socket emit functions
-			lib/socket/socket.ts        # Socket client instance
-			lib/validation/             # Validation logic
-			stores/patient.store.ts     # Zustand store
+  	src/
+    	app/                    # Next.js routes (pages)
+    	components/             # Reusable UI components
+    	stores/                 # Zustand state management
+    	services/               # Socket / API communication
+    	lib/
+     		socket/               # Socket client
+    		validation/           # Form validation logic
+  		types/                  # TypeScript types
+  		consts/                 # Static options / enums
+  		utils/                  # Helper functions (time, debounce)
 	socket-server/
-		index.js                      # Socket server (relay events)
+		index.js                  # Socket server (relay events)
 ```
 
 ### UI/UX Design Notes
