@@ -12,6 +12,7 @@ import { emitUpdate, emitSubmit, emitStatus } from "@/services/patient.socket";
 import { Status } from "@/consts/enum";
 import { INITIAL_PATIENT } from "@/consts/patient/patient.initial";
 import PatientForm from "@/components/PatientForm/PatientForm";
+import { debounce } from "@/utils/debounce";
 
 function PatientPage() {
 
@@ -37,8 +38,10 @@ function PatientPage() {
 
     setFormData(updated);
     // Emit update to socket
-    emitUpdate(updated);
-    emitStatus(Status.ACTIVE);
+    debounce("patient-update", (data: Patients) => {
+      emitUpdate(data);
+      emitStatus(Status.ACTIVE);
+    })(updated);
 
     // Clear error for the field on change
     setErrors((prev) => ({

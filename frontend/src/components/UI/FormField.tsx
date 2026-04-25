@@ -27,7 +27,7 @@ type FormFieldProps = {
 };
 
 const CONTROL_CLASSNAME =
-  "w-full rounded-xl border bg-white px-3 py-2.5 text-sm outline-none transition-all duration-200 placeholder:text-slate-400";
+  "w-full h-[42px] rounded-xl border bg-white px-3 py-2.5 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 appearance-none";
 
 export function FormField({
   label,

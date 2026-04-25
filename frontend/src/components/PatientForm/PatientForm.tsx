@@ -64,6 +64,7 @@ export default function PatientForm({
           type="date"
           value={formData.dateOfBirth}
           onChange={onChange}
+          placeholder={"YYYY-MM-DD"}
           required
           error={errors.dateOfBirth}
           readOnly={readOnly}

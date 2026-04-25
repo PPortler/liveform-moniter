@@ -23,6 +23,10 @@ io.on("connection", (socket) => {
   socket.on("form:status", (status) => {
     socket.broadcast.emit("form:status", status);
   });
+
+  socket.on("disconnect", () => {
+    console.log("disconnected:", socket.id);
+  });
 });
 
 const PORT = process.env.PORT || 4000;
